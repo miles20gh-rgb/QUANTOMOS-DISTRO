@@ -1,4 +1,4 @@
-Name: Build QUANTOM OS (Beta) by Pixel
+name: Build QUANTOM OS (Beta) by Pixel
 
 on:
   workflow_dispatch:
