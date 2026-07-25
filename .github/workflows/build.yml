@@ -1,4 +1,4 @@
-name: Build QUANTOM OS (Beta) by Pixel
+Name: Build QUANTOM OS (Beta) by Pixel
 
 on:
   workflow_dispatch:
@@ -14,21 +14,23 @@ jobs:
       - name: Install Build Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y live-build debootstrap squashfs-tools xorriso
+          sudo apt-get install -y live-build debootstrap squashfs-tools xorriso p7zip-full
 
       - name: Configure Debian Live System
         run: |
-          mkdir build && cd build
+          mkdir -p build && cd build
           lb config \
-            --architectures amd64 \
+            --distribution bookworm \
+            --architecture amd64 \
             --bootloader grub-efi \
-            --archive-areas "main contrib non-free non-free-firmware"
+            --archive-areas "main contrib non-free non-free-firmware" \
+            --mirror-bootstrap "http://deb.debian.org/debian/"
 
       - name: Add XFCE Desktop, Apps & Themes
         run: |
           cd build
           mkdir -p config/package-lists
-          echo "task-xfce-desktop plymouth plymouth-themes papirus-icon-theme pulseaudio pinta libreoffice gimp vlc" > config/package-lists/quantom.list.chroot
+          echo "task-xfce-desktop plymouth plymouth-themes papirus-icon-theme pipewire pinta libreoffice gimp vlc" > config/package-lists/quantom.list.chroot
 
       - name: Apply QUANTOM OS Branding
         run: |
@@ -50,5 +52,6 @@ jobs:
       - name: Upload ISO Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: QUANTOM-OS-Beta-Pixel.iso
+          name: QUANTOM-OS-Beta-Pixel-ISO
           path: build/*.iso
+          if-no-files-found: error
